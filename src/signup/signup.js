@@ -1,5 +1,5 @@
-import React from "react";
 import { Link } from "react-router-dom";
+import React from "react";
 import styles from "./styles";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -17,10 +17,11 @@ class SignupComponent extends React.Component {
     this.state = {
       email: null,
       password: null,
-      passwordConformation: null,
-      signupError: " "
+      passwordConfirmation: null,
+      signupError: ""
     };
   }
+
   render() {
     const { classes } = this.props;
 
@@ -34,14 +35,13 @@ class SignupComponent extends React.Component {
           <form onSubmit={e => this.submitSignup(e)} className={classes.form}>
             <FormControl required fullWidth margin="normal">
               <InputLabel htmlFor="signup-email-input">
-                {" "}
                 Enter Your Email
               </InputLabel>
               <Input
                 autoComplete="email"
                 autoFocus
-                id="signup-email-input"
                 onChange={e => this.userTyping("email", e)}
+                id="signup-email-input"
               />
             </FormControl>
             <FormControl required fullWidth margin="normal">
@@ -55,13 +55,13 @@ class SignupComponent extends React.Component {
               />
             </FormControl>
             <FormControl required fullWidth margin="normal">
-              <InputLabel htmlFor="signup-password-conformation-input">
+              <InputLabel htmlFor="signup-password-confirmation-input">
                 Confirm Your Password
               </InputLabel>
               <Input
                 type="password"
-                onChange={e => this.userTyping("passwordConformation", e)}
-                id="signup-password-conformation-input"
+                onChange={e => this.userTyping("passwordConfirmation", e)}
+                id="signup-password-confirmation-input"
               />
             </FormControl>
             <Button
@@ -83,13 +83,7 @@ class SignupComponent extends React.Component {
               {this.state.signupError}
             </Typography>
           ) : null}
-          <Typography
-            component="h5"
-            variant="h6"
-            className={classes.hasAccountHeader}
-          >
-            Already Have Account?
-          </Typography>
+          <h5 className={classes.hasAccountHeader}>Already Have An Account?</h5>
           <Link className={classes.logInLink} to="/login">
             Log In!
           </Link>
@@ -98,19 +92,18 @@ class SignupComponent extends React.Component {
     );
   }
 
-  // user typing function. we want to set the state to what the user is typing
-  userTyping = (type, e) => {
-    switch (type) {
+  userTyping = (whichInput, event) => {
+    switch (whichInput) {
       case "email":
-        this.setState({ email: e.target.value });
+        this.setState({ email: event.target.value });
         break;
 
       case "password":
-        this.setState({ password: e.target.value });
+        this.setState({ password: event.target.value });
         break;
 
       case "passwordConfirmation":
-        this.setState({ passwordConfirmation: e.target.value });
+        this.setState({ passwordConfirmation: event.target.value });
         break;
 
       default:
@@ -118,23 +111,25 @@ class SignupComponent extends React.Component {
     }
   };
 
-  formIsvalide = () => this.state.password === this.state.passwordConformation;
+  formIsValid = () => this.state.password === this.state.passwordConfirmation;
 
-  // prevent the automatic refreshing of the page on submit.
   submitSignup = e => {
-    e.preventDefault();
-    if (!this.formIsvalide()) {
-      this.setState({ signupError: "Passwords do not match!" });
+    e.preventDefault(); // This is to prevent the automatic refreshing of the page on submit.
+
+    if (!this.formIsValid()) {
+      this.setState({ signupError: "Passwords do not match" });
       return;
     }
-    // if form  is valid we want to cll firebase and add user to our authentication and add user to our data base
+
     firebase
       .auth()
       .createUserWithEmailAndPassword(this.state.email, this.state.password)
       .then(
         authRes => {
           const userObj = {
-            email: authRes.user.email
+            email: authRes.user.email,
+            friends: [],
+            messages: []
           };
           firebase
             .firestore()
@@ -145,23 +140,18 @@ class SignupComponent extends React.Component {
               () => {
                 this.props.history.push("/dashboard");
               },
-              dbError => {
-                console.log(dbError);
-                this.setState({
-                  signupError: "Failded to add user"
-                });
+              dbErr => {
+                console.log("Failed to add user to the database: ", dbErr);
+                this.setState({ signupError: "Failed to add user" });
               }
             );
         },
-        authError => {
-          console.log(authError);
-          this.setState({
-            signupError: "Failded to add user"
-          });
+        authErr => {
+          console.log("Failed to create user: ", authErr);
+          this.setState({ signupError: "Failed to add user" });
         }
       );
   };
 }
 
-// adds all the styles as a property to our component
 export default withStyles(styles)(SignupComponent);
