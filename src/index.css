@@ -1,13 +1,16 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+#routing-container,
+html {
+  background: linear-gradient(
+    to right,
+    rgb(60, 50, 120),
+    rgb(80, 90, 150),
+    rgb(100, 110, 170),
+    rgb(120, 130, 190),
+    rgb(180, 150, 200),
+    rgb(0, 180, 230),
+    rgb(0, 250, 260)
+  );
+  /* background-image: url("/public/img/BrutalLifeCycleJavascript.png");
+  background-size: 100%;
+  background-repeat: no-repeat; */
 }

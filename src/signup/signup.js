@@ -97,8 +97,8 @@ class SignupComponent extends React.Component {
       </main>
     );
   }
-  formInvalide = () => this.state.password === this.state.passwordConformation;
 
+  // user typing function. we want to set the state to what the user is typing
   userTyping = (type, e) => {
     switch (type) {
       case "email":
@@ -118,13 +118,16 @@ class SignupComponent extends React.Component {
     }
   };
 
+  formIsvalide = () => this.state.password === this.state.passwordConformation;
+
   // prevent the automatic refreshing of the page on submit.
   submitSignup = e => {
     e.preventDefault();
-    if (!this.formInvalide()) {
+    if (!this.formIsvalide()) {
       this.setState({ signupError: "Passwords do not match!" });
+      return;
     }
-
+    // if form  is valid we want to cll firebase and add user to our authentication and add user to our data base
     firebase
       .auth()
       .createUserWithEmailAndPassword(this.state.email, this.state.password)
