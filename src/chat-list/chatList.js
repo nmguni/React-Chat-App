@@ -64,7 +64,7 @@ class ChatListComponent extends React.Component {
         </List>
       </main>
     );
-  
+  }
   newChat = () => {
     console.log("new chat click");
   };
